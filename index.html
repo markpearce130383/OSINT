@@ -3,37 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Threat Intel Console V3</title>
+    <title>Parabellum Threat Console</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
     <style>
-        body { background-color: #0d1117; font-family: 'Courier New', Courier, monospace; }
-        .console-card { border: 1px solid #30363d; background-color: #161b22; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
-        .form-label { font-size: 0.8em; letter-spacing: 1px; color: #8b949e; text-transform: uppercase; }
-        .form-control { background-color: #0d1117; border: 1px solid #30363d; color: #c9d1d9; }
-        .form-control:focus { background-color: #0d1117; border-color: #58a6ff; color: #c9d1d9; box-shadow: none; }
-        .btn-search { background-color: #238636; border: none; color: white; transition: all 0.2s; }
-        .btn-search:hover { background-color: #2ea043; transform: scale(1.01); }
-        .section-title { color: #58a6ff; font-size: 0.9em; border-bottom: 1px solid #30363d; padding-bottom: 5px; margin-bottom: 15px; }
+        /* Professional 'Cyber' Aesthetic */
+        body { background-color: #050505; font-family: 'Courier New', Courier, monospace; color: #c9d1d9; }
+        
+        .console-card { 
+            border: 1px solid #30363d; 
+            background-color: #0d1117; 
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.05); 
+        }
+
+        /* Input Fields styling */
+        .form-label { 
+            font-size: 0.75em; 
+            letter-spacing: 1.5px; 
+            color: #8b949e; 
+            text-transform: uppercase; 
+            font-weight: bold;
+        }
+        
+        .form-control { 
+            background-color: #010409; 
+            border: 1px solid #30363d; 
+            color: #c9d1d9; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .form-control:focus { 
+            background-color: #010409; 
+            border-color: #238636; 
+            color: #fff; 
+            box-shadow: 0 0 5px rgba(35, 134, 54, 0.3); 
+        }
+
+        /* Button Styling */
+        .btn-search { 
+            background-color: #238636; 
+            border: 1px solid #2ea043; 
+            color: white; 
+            letter-spacing: 1px;
+            transition: all 0.2s; 
+        }
+        
+        .btn-search:hover { 
+            background-color: #2ea043; 
+            box-shadow: 0 0 15px rgba(46, 160, 67, 0.4);
+            transform: translateY(-1px);
+        }
+
+        /* Section Dividers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            color: #58a6ff; 
+            font-size: 0.85em; 
+            margin-bottom: 15px; 
+            border-bottom: 1px solid #21262d; 
+            padding-bottom: 8px;
+        }
+        .section-header i { margin-right: 8px; }
+
+        /* Animations */
         .blink { animation: blinker 1s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
     </style>
 </head>
-<body class="d-flex align-items-center py-5">
-    <div class="container" style="max-width: 700px;">
-        <main class="console-card p-4 p-md-5 rounded-3">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="text-white m-0">/// OSINT_TARGET_PROFILE</h2>
-                <span class="badge bg-danger">LEVEL: RESTRICTED</span>
+<body class="d-flex align-items-center py-5 min-vh-100">
+    <div class="container" style="max-width: 750px;">
+        <main class="console-card p-4 p-md-5 rounded-1">
+            
+            <div class="d-flex justify-content-between align-items-end mb-5 border-bottom border-secondary pb-3">
+                <div>
+                    <h2 class="text-white m-0 fw-bold">/// INTEL_OPERATIONS</h2>
+                    <small class="text-muted">SECURE OSINT GATEWAY v3.1</small>
+                </div>
+                <span class="badge border border-danger text-danger bg-transparent rounded-0">ACCESS: GRANTED</span>
             </div>
             
             <form id="intelForm">
-                <div class="mb-4">
-                    <div class="section-title"><i class="bi bi-hdd-network"></i> INFRASTRUCTURE TARGETS</div>
+                
+                <div class="mb-5">
+                    <div class="section-header"><i class="bi bi-hdd-network"></i> INFRASTRUCTURE INDICATORS</div>
                     <div class="row g-3">
                         <div class="col-md-8">
                             <label for="domainInput" class="form-label">Target Domain</label>
-                            <input type="text" class="form-control" id="domainInput" placeholder="acme-corp.com">
+                            <input type="text" class="form-control" id="domainInput" placeholder="example.com">
                         </div>
                         <div class="col-md-4">
                             <label for="ipInput" class="form-label">IP Address</label>
@@ -42,57 +100,64 @@
                     </div>
                 </div>
 
-                <div class="mb-4">
-                    <div class="section-title"><i class="bi bi-person-badge"></i> IDENTITY TARGETS</div>
+                <div class="mb-5">
+                    <div class="section-header"><i class="bi bi-person-vcard"></i> IDENTITY INDICATORS</div>
                     <div class="row g-3">
                         <div class="col-md-12">
-                            <label for="emailInput" class="form-label">Email Address (Target)</label>
-                            <input type="email" class="form-control" id="emailInput" placeholder="ceo@target.com">
+                            <label for="emailInput" class="form-label">Target Email Address</label>
+                            <input type="email" class="form-control" id="emailInput" placeholder="ceo@target-company.com">
                         </div>
                         <div class="col-md-12">
-                            <label for="nameInput" class="form-label">Name / Keyword / Handle</label>
+                            <label for="nameInput" class="form-label">Name / Handle / Keyword</label>
                             <input type="text" class="form-control" id="nameInput" placeholder="John Doe OR 'DarkWarrior99'">
                         </div>
                     </div>
                 </div>
 
                 <div class="mb-4 p-3 border border-secondary rounded bg-dark bg-opacity-25">
-                    <div class="section-title text-warning" style="border-color: #666;"><i class="bi bi-send-check"></i> REPORT DELIVERY</div>
-                    <label for="recipientInput" class="form-label text-white">Send Report To:</label>
-                    <input type="email" class="form-control border-warning" id="recipientInput" placeholder="your.email@agency.com" required>
+                    <div class="section-header text-warning border-0 m-0 p-0 mb-2"><i class="bi bi-send-check"></i> REPORT ROUTING</div>
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="recipientInput" class="form-label text-white">Send Intelligence Report To:</label>
+                            <input type="email" class="form-control border-secondary" id="recipientInput" placeholder="analyst@parabellum.co.uk" required>
+                        </div>
+                    </div>
                 </div>
 
-                <button type="submit" class="btn btn-search w-100 py-3 fw-bold mt-2" id="submitBtn">
-                    <i class="bi bi-radar"></i> INITIATE_DEEP_SCAN <span class="blink">_</span>
+                <button type="submit" class="btn btn-search w-100 py-3 fw-bold mt-2 rounded-0" id="submitBtn">
+                    <i class="bi bi-radar me-2"></i>INITIATE_DEEP_SCAN <span class="blink">_</span>
                 </button>
             </form>
 
-            <hr class="my-4 border-secondary">
-
-            <div id="statusArea" class="p-3 rounded bg-black d-none border border-secondary">
-                <div id="logContent" style="font-size: 0.85em; color: #8b949e;"></div>
+            <div id="statusArea" class="mt-4 p-3 rounded-1 bg-black d-none border border-secondary font-monospace" style="font-size: 0.8em;">
+                <div id="logContent" class="text-secondary"></div>
             </div>
         </main>
+        
+        <div class="text-center mt-3 text-secondary" style="font-size: 0.7em;">
+            ENCRYPTED CONNECTION ESTABLISHED • PARABELLUM SYSTEMS
+        </div>
     </div>
 
     <script>
         document.getElementById('intelForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // 1. Gather Data
+            // 1. Gather Data from Inputs
             const domain = document.getElementById('domainInput').value.trim();
             const ip = document.getElementById('ipInput').value.trim();
             const targetEmail = document.getElementById('emailInput').value.trim();
             const name = document.getElementById('nameInput').value.trim();
-            const recipient = document.getElementById('recipientInput').value.trim(); // NEW FIELD
+            const recipient = document.getElementById('recipientInput').value.trim();
 
+            // UI Elements
             const btn = document.getElementById('submitBtn');
             const statusArea = document.getElementById('statusArea');
             const logContent = document.getElementById('logContent');
 
-            // Validation
+            // 2. Validation
             if (!domain && !ip && !targetEmail && !name) {
-                alert("ERROR: Input required in at least one target field.");
+                alert("ERROR: Missing Indicators. Please provide at least one target (Domain, IP, Email, or Name).");
                 return;
             }
             if (!recipient) {
@@ -100,27 +165,39 @@
                 return;
             }
 
-            // 2. Construct Prompt
-            let constructedQuery = "INVESTIGATION PROFILE:\n";
+            // 3. Construct the "Context Prompt" for the AI Agent
+            // This combines all inputs into one clear instruction block for the LLM.
+            let constructedQuery = "INVESTIGATION TARGET PROFILE:\n";
             if (domain) constructedQuery += `- DOMAIN: ${domain}\n`;
             if (ip) constructedQuery += `- IP ADDRESS: ${ip}\n`;
             if (targetEmail) constructedQuery += `- TARGET EMAIL: ${targetEmail}\n`;
             if (name) constructedQuery += `- KEYWORD/NAME: ${name}\n`;
-            constructedQuery += "\nINSTRUCTIONS: Cross-reference these indicators. If a domain is given, check infrastructure. If an email/name is given, check for breaches.";
+            constructedQuery += "\nMISSION: Cross-reference these indicators. Check infrastructure for the domain/IP. Check for breaches and dark web chatter for the email/name.";
 
-            // 3. UI Updates
+            // 4. Update UI
             btn.disabled = true;
             btn.innerHTML = 'UPLOADING PROFILE... <span class="spinner-border spinner-border-sm"></span>';
             statusArea.classList.remove('d-none');
             logContent.innerHTML = `<span class="text-warning">[+] Encrypting payload...</span><br>`;
 
-            // 4. Send to n8n
-            // REPLACE THIS WITH YOUR WEBHOOK URL
+            // 5. Send Payload to n8n
+            // ==========================================
+            // PASTE YOUR PRODUCTION URL BELOW
+            // ==========================================
             const webhookUrl = "https://dtts.app.n8n.cloud/webhook/investigate"; 
 
             const payload = {
+                // The prompt for the AI Agent
                 query: constructedQuery,
-                recipientEmail: recipient, // NEW FIELD SENT TO N8N
+                // The raw data for the Report Builder (the clean table in the email)
+                structuredData: {
+                    domain: domain,
+                    ip: ip,
+                    email: targetEmail,
+                    name: name
+                },
+                // Where to send the email
+                recipientEmail: recipient,
                 timestamp: new Date().toISOString()
             };
 
@@ -131,17 +208,19 @@
                     body: JSON.stringify(payload)
                 });
 
-                logContent.innerHTML += `<span class="text-success">[+] Profile transmitted to Agent.</span><br>`;
-                logContent.innerHTML += `<span class="text-white">>> Report will be sent to: ${recipient}</span>`;
+                logContent.innerHTML += `<span class="text-success">[+] Payload successfully transmitted to Agent.</span><br>`;
+                logContent.innerHTML += `<span class="text-white">>> Intelligence Report will be routed to: ${recipient}</span>`;
 
             } catch (error) {
-                logContent.innerHTML += `<span class="text-danger">[!] Error: ${error.message}</span>`;
+                logContent.innerHTML += `<span class="text-danger">[!] Transmission Error: ${error.message}</span><br>`;
+                logContent.innerHTML += `<span class="text-secondary">Check console for CORS details.</span>`;
             }
 
+            // Reset Button after delay
             setTimeout(() => {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="bi bi-radar"></i> INITIATE_DEEP_SCAN <span class="blink">_</span>';
-            }, 3000);
+                btn.innerHTML = '<i class="bi bi-radar me-2"></i>INITIATE_DEEP_SCAN <span class="blink">_</span>';
+            }, 5000);
         });
     </script>
 </body>
