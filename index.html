@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threat Intel Console</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #0d1117; font-family: 'Courier New', Courier, monospace; }
+        .console-card { border: 1px solid #30363d; background-color: #161b22; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+        .btn-search { background-color: #238636; border: none; color: white; }
+        .btn-search:hover { background-color: #2ea043; }
+        .status-log { font-size: 0.9em; color: #8b949e; min-height: 100px; }
+        .blink { animation: blinker 1s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0; } }
+    </style>
+</head>
+<body class="d-flex align-items-center py-4 bg-body-tertiary">
+    <div class="container" style="max-width: 600px;">
+        <main class="console-card p-5 rounded-3">
+            <h2 class="text-white mb-4">/// THREAT_INTEL_SEARCH</h2>
+            
+            <form id="intelForm">
+                <div class="mb-3">
+                    <label for="queryInput" class="form-label text-success">TARGET_IDENTIFIER</label>
+                    <input type="text" class="form-control" id="queryInput" placeholder="e.g. example.com or john.doe@email.com" required>
+                    <div class="form-text">Enter Domain, Email, or HNWI Name to investigate.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-success">SEARCH_DEPTH</label>
+                    <select class="form-select" id="depthSelect">
+                        <option value="standard">Standard (Ahmia + LeakIX + OTX)</option>
+                        <option value="deep">Deep (Future Feature)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-search w-100 py-2 fw-bold" id="submitBtn">
+                    INITIATE_SCAN <span class="blink">_</span>
+                </button>
+            </form>
+
+            <hr class="my-4 border-secondary">
+
+            <div id="statusArea" class="status-log p-3 rounded bg-black d-none">
+                <div id="logContent"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('intelForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // 1. Get Values
+            const query = document.getElementById('queryInput').value;
+            const btn = document.getElementById('submitBtn');
+            const statusArea = document.getElementById('statusArea');
+            const logContent = document.getElementById('logContent');
+
+            // 2. UI Updates
+            btn.disabled = true;
+            btn.innerText = "TRANSMITTING...";
+            statusArea.classList.remove('d-none');
+            logContent.innerHTML = `<span class="text-warning">[+] Connecting to secure node...</span><br>`;
+
+            // 3. Prepare Payload
+            const payload = {
+                query: query,
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                // 4. Send to n8n Webhook
+                // REPLACE THIS URL WITH YOUR N8N PRODUCTION WEBHOOK URL
+                const webhookUrl = "YOUR_N8N_WEBHOOK_URL_HERE"; 
+
+                // Note: 'no-cors' mode is often needed if n8n doesn't return CORS headers, 
+                // but it means we can't read the specific response text. 
+                // If you own the n8n instance, enable CORS environment variables.
+                await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                logContent.innerHTML += `<span class="text-success">[+] Payload delivered successfully.</span><br>`;
+                logContent.innerHTML += `<span class="text-info">[i] Agent activated. Check your inbox/slack for the report.</span>`;
+
+            } catch (error) {
+                logContent.innerHTML += `<span class="text-danger">[!] Transmission Error: ${error.message}</span>`;
+            }
+
+            // Reset Button
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = 'INITIATE_SCAN <span class="blink">_</span>';
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
