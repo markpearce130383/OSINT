@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Threat Intel Console V2</title>
+    <title>Threat Intel Console V3</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
@@ -46,7 +46,7 @@
                     <div class="section-title"><i class="bi bi-person-badge"></i> IDENTITY TARGETS</div>
                     <div class="row g-3">
                         <div class="col-md-12">
-                            <label for="emailInput" class="form-label">Email Address</label>
+                            <label for="emailInput" class="form-label">Email Address (Target)</label>
                             <input type="email" class="form-control" id="emailInput" placeholder="ceo@target.com">
                         </div>
                         <div class="col-md-12">
@@ -56,11 +56,10 @@
                     </div>
                 </div>
 
-                <div class="alert alert-dark d-flex align-items-center" role="alert">
-                    <i class="bi bi-info-circle me-2"></i>
-                    <div style="font-size: 0.8em; color: #8b949e;">
-                        Fill at least one field. The Agent will cross-reference available data points.
-                    </div>
+                <div class="mb-4 p-3 border border-secondary rounded bg-dark bg-opacity-25">
+                    <div class="section-title text-warning" style="border-color: #666;"><i class="bi bi-send-check"></i> REPORT DELIVERY</div>
+                    <label for="recipientInput" class="form-label text-white">Send Report To:</label>
+                    <input type="email" class="form-control border-warning" id="recipientInput" placeholder="your.email@agency.com" required>
                 </div>
 
                 <button type="submit" class="btn btn-search w-100 py-3 fw-bold mt-2" id="submitBtn">
@@ -83,27 +82,31 @@
             // 1. Gather Data
             const domain = document.getElementById('domainInput').value.trim();
             const ip = document.getElementById('ipInput').value.trim();
-            const email = document.getElementById('emailInput').value.trim();
+            const targetEmail = document.getElementById('emailInput').value.trim();
             const name = document.getElementById('nameInput').value.trim();
+            const recipient = document.getElementById('recipientInput').value.trim(); // NEW FIELD
 
             const btn = document.getElementById('submitBtn');
             const statusArea = document.getElementById('statusArea');
             const logContent = document.getElementById('logContent');
 
-            // Validation: Ensure at least one field is filled
-            if (!domain && !ip && !email && !name) {
-                alert("ERROR: Input required in at least one field.");
+            // Validation
+            if (!domain && !ip && !targetEmail && !name) {
+                alert("ERROR: Input required in at least one target field.");
+                return;
+            }
+            if (!recipient) {
+                alert("ERROR: Recipient email is required.");
                 return;
             }
 
-            // 2. Construct the "Context Prompt" for the Agent
-            // We combine inputs into a single text block so the Agent understands the relationship.
+            // 2. Construct Prompt
             let constructedQuery = "INVESTIGATION PROFILE:\n";
             if (domain) constructedQuery += `- DOMAIN: ${domain}\n`;
             if (ip) constructedQuery += `- IP ADDRESS: ${ip}\n`;
-            if (email) constructedQuery += `- EMAIL: ${email}\n`;
+            if (targetEmail) constructedQuery += `- TARGET EMAIL: ${targetEmail}\n`;
             if (name) constructedQuery += `- KEYWORD/NAME: ${name}\n`;
-            constructedQuery += "\nINSTRUCTIONS: Cross-reference these indicators. If a domain is given, check infrastructure. If an email/name is given, check for breaches and dark web mentions.";
+            constructedQuery += "\nINSTRUCTIONS: Cross-reference these indicators. If a domain is given, check infrastructure. If an email/name is given, check for breaches.";
 
             // 3. UI Updates
             btn.disabled = true;
@@ -116,7 +119,8 @@
             const webhookUrl = "https://dtts.app.n8n.cloud/webhook/investigate"; 
 
             const payload = {
-                query: constructedQuery, // We still send "query" so n8n doesn't break
+                query: constructedQuery,
+                recipientEmail: recipient, // NEW FIELD SENT TO N8N
                 timestamp: new Date().toISOString()
             };
 
@@ -128,7 +132,7 @@
                 });
 
                 logContent.innerHTML += `<span class="text-success">[+] Profile transmitted to Agent.</span><br>`;
-                logContent.innerHTML += `<span class="text-white">>> Awaiting analysis report via comms channels.</span>`;
+                logContent.innerHTML += `<span class="text-white">>> Report will be sent to: ${recipient}</span>`;
 
             } catch (error) {
                 logContent.innerHTML += `<span class="text-danger">[!] Error: ${error.message}</span>`;
