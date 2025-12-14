@@ -1,149 +1,175 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parabellum Threat Console</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
-        /* Professional 'Cyber' Aesthetic */
-        body { background-color: #050505; font-family: 'Courier New', Courier, monospace; color: #c9d1d9; }
-        
-        .console-card { 
-            border: 1px solid #30363d; 
-            background-color: #0d1117; 
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.05); 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        /* Input Fields styling */
-        .form-label { 
-            font-size: 0.75em; 
-            letter-spacing: 1.5px; 
-            color: #8b949e; 
-            text-transform: uppercase; 
-            font-weight: bold;
+        .animate-fadeIn {
+            animation: fadeIn 0.4s ease-out forwards;
         }
         
-        .form-control { 
-            background-color: #010409; 
-            border: 1px solid #30363d; 
-            color: #c9d1d9; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        /* Custom Scrollbar for log area */
+        .log-scroll::-webkit-scrollbar {
+            width: 8px;
         }
-        
-        .form-control:focus { 
-            background-color: #010409; 
-            border-color: #238636; 
-            color: #fff; 
-            box-shadow: 0 0 5px rgba(35, 134, 54, 0.3); 
+        .log-scroll::-webkit-scrollbar-track {
+            background: #1e293b; 
         }
-
-        /* Button Styling */
-        .btn-search { 
-            background-color: #238636; 
-            border: 1px solid #2ea043; 
-            color: white; 
-            letter-spacing: 1px;
-            transition: all 0.2s; 
+        .log-scroll::-webkit-scrollbar-thumb {
+            background: #475569; 
+            border-radius: 4px;
         }
-        
-        .btn-search:hover { 
-            background-color: #2ea043; 
-            box-shadow: 0 0 15px rgba(46, 160, 67, 0.4);
-            transform: translateY(-1px);
-        }
-
-        /* Section Dividers */
-        .section-header {
-            display: flex;
-            align-items: center;
-            color: #58a6ff; 
-            font-size: 0.85em; 
-            margin-bottom: 15px; 
-            border-bottom: 1px solid #21262d; 
-            padding-bottom: 8px;
-        }
-        .section-header i { margin-right: 8px; }
-
-        /* Animations */
-        .blink { animation: blinker 1s linear infinite; }
-        @keyframes blinker { 50% { opacity: 0; } }
     </style>
 </head>
-<body class="d-flex align-items-center py-5 min-vh-100">
-    <div class="container" style="max-width: 750px;">
-        <main class="console-card p-4 p-md-5 rounded-1">
-            
-            <div class="d-flex justify-content-between align-items-end mb-5 border-bottom border-secondary pb-3">
-                <div>
-                    <h2 class="text-white m-0 fw-bold">/// INTEL_OPERATIONS</h2>
-                    <small class="text-muted">SECURE OSINT GATEWAY v3.1</small>
-                </div>
-                <span class="badge border border-danger text-danger bg-transparent rounded-0">ACCESS: GRANTED</span>
-            </div>
-            
-            <form id="intelForm">
-                
-                <div class="mb-5">
-                    <div class="section-header"><i class="bi bi-hdd-network"></i> INFRASTRUCTURE INDICATORS</div>
-                    <div class="row g-3">
-                        <div class="col-md-8">
-                            <label for="domainInput" class="form-label">Target Domain</label>
-                            <input type="text" class="form-control" id="domainInput" placeholder="example.com">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="ipInput" class="form-label">IP Address</label>
-                            <input type="text" class="form-control" id="ipInput" placeholder="192.168.x.x">
-                        </div>
-                    </div>
-                </div>
+<body class="bg-slate-100 dark:bg-slate-950 min-h-screen font-sans text-slate-800 dark:text-slate-200 transition-colors duration-300 py-8 px-4">
 
-                <div class="mb-5">
-                    <div class="section-header"><i class="bi bi-person-vcard"></i> IDENTITY INDICATORS</div>
-                    <div class="row g-3">
-                        <div class="col-md-12">
-                            <label for="emailInput" class="form-label">Target Email Address</label>
-                            <input type="email" class="form-control" id="emailInput" placeholder="ceo@target-company.com">
-                        </div>
-                        <div class="col-md-12">
-                            <label for="nameInput" class="form-label">Name / Handle / Keyword</label>
-                            <input type="text" class="form-control" id="nameInput" placeholder="John Doe OR 'DarkWarrior99'">
-                        </div>
-                    </div>
-                </div>
+    <button id="theme-toggle" class="fixed top-4 right-4 z-50 p-2 rounded-full bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 shadow-lg border border-slate-200 dark:border-slate-700 hover:scale-105 transition-transform">
+        <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+        <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
+    </button>
 
-                <div class="mb-4 p-3 border border-secondary rounded bg-dark bg-opacity-25">
-                    <div class="section-header text-warning border-0 m-0 p-0 mb-2"><i class="bi bi-send-check"></i> REPORT ROUTING</div>
-                    <div class="row">
-                        <div class="col-12">
-                            <label for="recipientInput" class="form-label text-white">Send Intelligence Report To:</label>
-                            <input type="email" class="form-control border-secondary" id="recipientInput" placeholder="analyst@parabellum.co.uk" required>
-                        </div>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-search w-100 py-3 fw-bold mt-2 rounded-0" id="submitBtn">
-                    <i class="bi bi-radar me-2"></i>INITIATE_DEEP_SCAN <span class="blink">_</span>
-                </button>
-            </form>
-
-            <div id="statusArea" class="mt-4 p-3 rounded-1 bg-black d-none border border-secondary font-monospace" style="font-size: 0.8em;">
-                <div id="logContent" class="text-secondary"></div>
-            </div>
-        </main>
+    <div class="max-w-3xl mx-auto animate-fadeIn">
         
-        <div class="text-center mt-3 text-secondary" style="font-size: 0.7em;">
-            ENCRYPTED CONNECTION ESTABLISHED • PARABELLUM SYSTEMS
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-700">
+            
+            <div class="bg-slate-900 dark:bg-black p-6 text-white flex justify-between items-center">
+                <div>
+                    <div class="flex items-center gap-3 mb-1">
+                        <i data-lucide="radar" class="w-8 h-8 text-emerald-400"></i>
+                        <h1 class="text-2xl font-bold tracking-tight">INTEL_OPERATIONS</h1>
+                    </div>
+                    <p class="text-slate-400 text-sm font-mono tracking-widest">SECURE OSINT GATEWAY v3.1</p>
+                </div>
+                <div class="hidden sm:block">
+                    <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded text-xs font-bold tracking-wider uppercase">
+                        Access Granted
+                    </span>
+                </div>
+            </div>
+
+            <div class="p-6 md:p-8">
+                <form id="intelForm" class="space-y-6">
+
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-lg border border-slate-200 dark:border-slate-700">
+                        <div class="flex items-center gap-2 mb-4 text-emerald-600 dark:text-emerald-400 font-bold uppercase text-xs tracking-wider">
+                            <i data-lucide="globe" class="w-4 h-4"></i>
+                            Infrastructure Indicators
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Target Domain</label>
+                                <input type="text" id="domainInput" placeholder="example.com" 
+                                    class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white dark:bg-slate-800 dark:text-white transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">IP Address</label>
+                                <input type="text" id="ipInput" placeholder="192.168.x.x" 
+                                    class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white dark:bg-slate-800 dark:text-white transition">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-lg border border-slate-200 dark:border-slate-700">
+                        <div class="flex items-center gap-2 mb-4 text-emerald-600 dark:text-emerald-400 font-bold uppercase text-xs tracking-wider">
+                            <i data-lucide="user-square" class="w-4 h-4"></i>
+                            Identity Indicators
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Target Email Address</label>
+                                <input type="email" id="emailInput" placeholder="ceo@target-company.com" 
+                                    class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white dark:bg-slate-800 dark:text-white transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Name / Handle / Keyword</label>
+                                <input type="text" id="nameInput" placeholder="John Doe OR 'DarkWarrior99'" 
+                                    class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white dark:bg-slate-800 dark:text-white transition">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 p-5 rounded-lg border border-slate-700 shadow-inner">
+                        <div class="flex items-center gap-2 mb-4 text-emerald-400 font-bold uppercase text-xs tracking-wider">
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                            Report Routing
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-1">Send Intelligence Report To</label>
+                            <input type="email" id="recipientInput" placeholder="analyst@parabellum.co.uk" required
+                                class="w-full p-3 border border-slate-700 bg-slate-800 text-white rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition placeholder-slate-500">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitBtn" 
+                        class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-emerald-500/20 transform hover:-translate-y-0.5 transition-all duration-200 flex justify-center items-center gap-2 tracking-wide uppercase">
+                        <i data-lucide="scan-line" class="w-5 h-5"></i> Initiate Deep Scan
+                    </button>
+
+                </form>
+
+                <div id="statusArea" class="hidden mt-6 bg-black rounded-lg border border-slate-700 p-4 font-mono text-sm shadow-inner">
+                    <div class="flex items-center gap-2 border-b border-slate-800 pb-2 mb-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span class="text-xs text-slate-500 ml-auto">TERMINAL_OUTPUT</span>
+                    </div>
+                    <div id="logContent" class="text-slate-300 space-y-1 h-32 overflow-y-auto log-scroll">
+                        </div>
+                </div>
+            </div>
+            
+            <div class="bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 p-3 text-center">
+                <p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">
+                    Encrypted Connection • Parabellum Systems
+                </p>
+            </div>
+
         </div>
     </div>
 
     <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Theme Toggle Logic
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+        
+        // Check system preference
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+        } else {
+            html.classList.remove('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+        });
+
+        // Form Logic
         document.getElementById('intelForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // 1. Gather Data from Inputs
+            // 1. Gather Data
             const domain = document.getElementById('domainInput').value.trim();
             const ip = document.getElementById('ipInput').value.trim();
             const targetEmail = document.getElementById('emailInput').value.trim();
@@ -154,19 +180,19 @@
             const btn = document.getElementById('submitBtn');
             const statusArea = document.getElementById('statusArea');
             const logContent = document.getElementById('logContent');
+            const originalBtnContent = btn.innerHTML;
 
             // 2. Validation
             if (!domain && !ip && !targetEmail && !name) {
-                alert("ERROR: Missing Indicators. Please provide at least one target (Domain, IP, Email, or Name).");
+                alert("Please provide at least one target indicator (Domain, IP, Email, or Name).");
                 return;
             }
             if (!recipient) {
-                alert("ERROR: Recipient email is required.");
+                alert("Recipient email is required.");
                 return;
             }
 
-            // 3. Construct the "Context Prompt" for the AI Agent
-            // This combines all inputs into one clear instruction block for the LLM.
+            // 3. Construct Query
             let constructedQuery = "INVESTIGATION TARGET PROFILE:\n";
             if (domain) constructedQuery += `- DOMAIN: ${domain}\n`;
             if (ip) constructedQuery += `- IP ADDRESS: ${ip}\n`;
@@ -174,29 +200,24 @@
             if (name) constructedQuery += `- KEYWORD/NAME: ${name}\n`;
             constructedQuery += "\nMISSION: Cross-reference these indicators. Check infrastructure for the domain/IP. Check for breaches and dark web chatter for the email/name.";
 
-            // 4. Update UI
+            // 4. Update UI to Loading State
             btn.disabled = true;
-            btn.innerHTML = 'UPLOADING PROFILE... <span class="spinner-border spinner-border-sm"></span>';
-            statusArea.classList.remove('d-none');
-            logContent.innerHTML = `<span class="text-warning">[+] Encrypting payload...</span><br>`;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Uploading Profile...`;
+            lucide.createIcons(); // Refresh icons for the spinner
 
-            // 5. Send Payload to n8n
-            // ==========================================
-            // PASTE YOUR PRODUCTION URL BELOW
-            // ==========================================
+            statusArea.classList.remove('hidden');
+            logContent.innerHTML = `
+                <div class="flex items-center gap-2 text-yellow-500">
+                    <span>[+] Encrypting payload...</span>
+                </div>
+            `;
+
+            // 5. Send Payload
             const webhookUrl = "https://dtts.app.n8n.cloud/webhook/investigate"; 
 
             const payload = {
-                // The prompt for the AI Agent
                 query: constructedQuery,
-                // The raw data for the Report Builder (the clean table in the email)
-                structuredData: {
-                    domain: domain,
-                    ip: ip,
-                    email: targetEmail,
-                    name: name
-                },
-                // Where to send the email
+                structuredData: { domain, ip, email: targetEmail, name },
                 recipientEmail: recipient,
                 timestamp: new Date().toISOString()
             };
@@ -208,18 +229,36 @@
                     body: JSON.stringify(payload)
                 });
 
-                logContent.innerHTML += `<span class="text-success">[+] Payload successfully transmitted to Agent.</span><br>`;
-                logContent.innerHTML += `<span class="text-white">>> Intelligence Report will be routed to: ${recipient}</span>`;
+                // Success Log
+                logContent.innerHTML += `
+                    <div class="flex items-center gap-2 text-emerald-400 mt-1">
+                        <span>[+] Payload transmitted to Agent.</span>
+                    </div>
+                    <div class="text-slate-400 mt-2 pl-4 border-l-2 border-slate-700">
+                        >> Intelligence Report routed to:<br>
+                        <span class="text-white">${recipient}</span>
+                    </div>
+                `;
+
+                btn.innerHTML = `<i data-lucide="check" class="w-5 h-5"></i> Request Sent`;
+                lucide.createIcons();
 
             } catch (error) {
-                logContent.innerHTML += `<span class="text-danger">[!] Transmission Error: ${error.message}</span><br>`;
-                logContent.innerHTML += `<span class="text-secondary">Check console for CORS details.</span>`;
+                // Error Log
+                logContent.innerHTML += `
+                    <div class="text-red-500 mt-1">
+                        [!] Transmission Error: ${error.message}
+                    </div>
+                `;
+                btn.innerHTML = `Error - Try Again`;
             }
 
             // Reset Button after delay
             setTimeout(() => {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="bi bi-radar me-2"></i>INITIATE_DEEP_SCAN <span class="blink">_</span>';
+                btn.innerHTML = originalBtnContent;
+                // Re-render original icons
+                lucide.createIcons();
             }, 5000);
         });
     </script>
