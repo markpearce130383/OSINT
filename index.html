@@ -24,15 +24,16 @@
         }
         
         /* Custom Scrollbar for log area */
-        .log-scroll::-webkit-scrollbar {
-            width: 8px;
-        }
-        .log-scroll::-webkit-scrollbar-track {
-            background: #1e293b; 
-        }
-        .log-scroll::-webkit-scrollbar-thumb {
-            background: #475569; 
-            border-radius: 4px;
+        .log-scroll::-webkit-scrollbar { width: 8px; }
+        .log-scroll::-webkit-scrollbar-track { background: #1e293b; }
+        .log-scroll::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+
+        /* Report Content Styling (Overrides for injected HTML) */
+        #injected-report h1, #injected-report h2, #injected-report h3 {
+            color: #10b981; /* Emerald-500 */
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
     </style>
 </head>
@@ -43,11 +44,11 @@
         <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
     </button>
 
-    <div class="max-w-3xl mx-auto animate-fadeIn">
+    <div class="max-w-4xl mx-auto animate-fadeIn">
         
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-700">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-700 relative min-h-[600px]">
             
-            <div class="bg-slate-900 dark:bg-black p-6 text-white flex justify-between items-center">
+            <div class="bg-slate-900 dark:bg-black p-6 text-white flex justify-between items-center sticky top-0 z-40">
                 <div>
                     <div class="flex items-center gap-3 mb-1">
                         <i data-lucide="radar" class="w-8 h-8 text-emerald-400"></i>
@@ -63,80 +64,96 @@
             </div>
 
             <div class="p-6 md:p-8">
-                <form id="intelForm" class="space-y-6">
+                
+                <div id="view-input">
+                    <form id="intelForm" class="space-y-6">
 
-                    <div class="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-lg border border-slate-200 dark:border-slate-700">
-                        <div class="flex items-center gap-2 mb-4 text-emerald-600 dark:text-emerald-400 font-bold uppercase text-xs tracking-wider">
-                            <i data-lucide="globe" class="w-4 h-4"></i>
-                            Infrastructure Indicators
+                        <div class="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-lg border border-slate-200 dark:border-slate-700">
+                            <div class="flex items-center gap-2 mb-4 text-emerald-600 dark:text-emerald-400 font-bold uppercase text-xs tracking-wider">
+                                <i data-lucide="globe" class="w-4 h-4"></i>
+                                Infrastructure Indicators
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Target Domain</label>
+                                    <input type="text" id="domainInput" placeholder="example.com" 
+                                        class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white dark:bg-slate-800 dark:text-white transition">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">IP Address</label>
+                                    <input type="text" id="ipInput" placeholder="192.168.x.x" 
+                                        class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white dark:bg-slate-800 dark:text-white transition">
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="md:col-span-2">
-                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Target Domain</label>
-                                <input type="text" id="domainInput" placeholder="example.com" 
-                                    class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white dark:bg-slate-800 dark:text-white transition">
+
+                        <div class="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-lg border border-slate-200 dark:border-slate-700">
+                            <div class="flex items-center gap-2 mb-4 text-emerald-600 dark:text-emerald-400 font-bold uppercase text-xs tracking-wider">
+                                <i data-lucide="user-square" class="w-4 h-4"></i>
+                                Identity Indicators
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Target Email Address</label>
+                                    <input type="email" id="emailInput" placeholder="ceo@target-company.com" 
+                                        class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white dark:bg-slate-800 dark:text-white transition">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Name / Handle / Keyword</label>
+                                    <input type="text" id="nameInput" placeholder="John Doe OR 'DarkWarrior99'" 
+                                        class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white dark:bg-slate-800 dark:text-white transition">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900 p-5 rounded-lg border border-slate-700 shadow-inner">
+                            <div class="flex items-center gap-2 mb-4 text-emerald-400 font-bold uppercase text-xs tracking-wider">
+                                <i data-lucide="send" class="w-4 h-4"></i>
+                                Report Routing
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">IP Address</label>
-                                <input type="text" id="ipInput" placeholder="192.168.x.x" 
-                                    class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white dark:bg-slate-800 dark:text-white transition">
+                                <label class="block text-xs font-bold text-slate-400 mb-1">Send Intelligence Report To</label>
+                                <input type="email" id="recipientInput" placeholder="analyst@parabellum.co.uk" required
+                                    class="w-full p-3 border border-slate-700 bg-slate-800 text-white rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition placeholder-slate-500">
                             </div>
                         </div>
-                    </div>
 
-                    <div class="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-lg border border-slate-200 dark:border-slate-700">
-                        <div class="flex items-center gap-2 mb-4 text-emerald-600 dark:text-emerald-400 font-bold uppercase text-xs tracking-wider">
-                            <i data-lucide="user-square" class="w-4 h-4"></i>
-                            Identity Indicators
+                        <button type="submit" id="submitBtn" 
+                            class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-emerald-500/20 transform hover:-translate-y-0.5 transition-all duration-200 flex justify-center items-center gap-2 tracking-wide uppercase">
+                            <i data-lucide="scan-line" class="w-5 h-5"></i> Initiate Deep Scan
+                        </button>
+                    </form>
+
+                    <div id="statusArea" class="hidden mt-6 bg-black rounded-lg border border-slate-700 p-4 font-mono text-sm shadow-inner">
+                        <div class="flex items-center gap-2 border-b border-slate-800 pb-2 mb-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            <span class="text-xs text-slate-500 ml-auto">TERMINAL_OUTPUT</span>
                         </div>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Target Email Address</label>
-                                <input type="email" id="emailInput" placeholder="ceo@target-company.com" 
-                                    class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white dark:bg-slate-800 dark:text-white transition">
+                        <div id="logContent" class="text-slate-300 space-y-1 h-32 overflow-y-auto log-scroll">
                             </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Name / Handle / Keyword</label>
-                                <input type="text" id="nameInput" placeholder="John Doe OR 'DarkWarrior99'" 
-                                    class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white dark:bg-slate-800 dark:text-white transition">
-                            </div>
+                    </div>
+                </div>
+
+                <div id="view-result" class="hidden animate-fadeIn">
+                    <div class="flex justify-between items-center mb-6 border-b border-slate-200 dark:border-slate-700 pb-4">
+                        <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                            <i data-lucide="check-circle" class="w-6 h-6"></i>
+                            <span class="font-bold text-lg">Scan Complete</span>
                         </div>
+                        <button onclick="location.reload()" class="text-sm text-slate-500 hover:text-emerald-500 underline">New Scan</button>
                     </div>
 
-                    <div class="bg-slate-900 p-5 rounded-lg border border-slate-700 shadow-inner">
-                        <div class="flex items-center gap-2 mb-4 text-emerald-400 font-bold uppercase text-xs tracking-wider">
-                            <i data-lucide="send" class="w-4 h-4"></i>
-                            Report Routing
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Send Intelligence Report To</label>
-                            <input type="email" id="recipientInput" placeholder="analyst@parabellum.co.uk" required
-                                class="w-full p-3 border border-slate-700 bg-slate-800 text-white rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition placeholder-slate-500">
-                        </div>
-                    </div>
-
-                    <button type="submit" id="submitBtn" 
-                        class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-emerald-500/20 transform hover:-translate-y-0.5 transition-all duration-200 flex justify-center items-center gap-2 tracking-wide uppercase">
-                        <i data-lucide="scan-line" class="w-5 h-5"></i> Initiate Deep Scan
-                    </button>
-
-                </form>
-
-                <div id="statusArea" class="hidden mt-6 bg-black rounded-lg border border-slate-700 p-4 font-mono text-sm shadow-inner">
-                    <div class="flex items-center gap-2 border-b border-slate-800 pb-2 mb-2">
-                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                        <span class="text-xs text-slate-500 ml-auto">TERMINAL_OUTPUT</span>
-                    </div>
-                    <div id="logContent" class="text-slate-300 space-y-1 h-32 overflow-y-auto log-scroll">
+                    <div id="injected-report" class="prose prose-slate dark:prose-invert max-w-none">
                         </div>
                 </div>
+
             </div>
             
-            <div class="bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 p-3 text-center">
+            <div class="bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 p-3 text-center absolute bottom-0 w-full">
                 <p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">
                     Encrypted Connection • Parabellum Systems
                 </p>
@@ -153,7 +170,6 @@
         const themeToggle = document.getElementById('theme-toggle');
         const html = document.documentElement;
         
-        // Check system preference
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             html.classList.add('dark');
         } else {
@@ -176,7 +192,6 @@
             const name = document.getElementById('nameInput').value.trim();
             const recipient = document.getElementById('recipientInput').value.trim();
 
-            // UI Elements
             const btn = document.getElementById('submitBtn');
             const statusArea = document.getElementById('statusArea');
             const logContent = document.getElementById('logContent');
@@ -203,7 +218,7 @@
             // 4. Update UI to Loading State
             btn.disabled = true;
             btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Uploading Profile...`;
-            lucide.createIcons(); // Refresh icons for the spinner
+            lucide.createIcons(); 
 
             statusArea.classList.remove('hidden');
             logContent.innerHTML = `
@@ -223,43 +238,57 @@
             };
 
             try {
-                await fetch(webhookUrl, {
+                // IMPORTANT: We await the actual HTML/Text response now
+                const response = await fetch(webhookUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
 
-                // Success Log
+                // Update Logs
                 logContent.innerHTML += `
                     <div class="flex items-center gap-2 text-emerald-400 mt-1">
-                        <span>[+] Payload transmitted to Agent.</span>
+                        <span>[+] Connection Established.</span>
                     </div>
-                    <div class="text-slate-400 mt-2 pl-4 border-l-2 border-slate-700">
-                        >> Intelligence Report routed to:<br>
-                        <span class="text-white">${recipient}</span>
-                    </div>
+                    <div class="text-slate-400 mt-1">>> Awaiting Intelligence Stream...</div>
                 `;
 
-                btn.innerHTML = `<i data-lucide="check" class="w-5 h-5"></i> Request Sent`;
-                lucide.createIcons();
+                // Handle the Response Content
+                let resultHtml = "";
+                const contentType = response.headers.get("content-type");
+                
+                if (contentType && contentType.includes("application/json")) {
+                    const jsonData = await response.json();
+                    // Assuming n8n returns a JSON object with a property like 'output' or 'html'
+                    resultHtml = jsonData.output || jsonData.html || JSON.stringify(jsonData);
+                } else {
+                    // Assuming n8n returns raw HTML
+                    resultHtml = await response.text();
+                }
+
+                if (response.ok) {
+                    // 6. SWAP VIEWS: Hide Form, Show Result
+                    document.getElementById('view-input').classList.add('hidden');
+                    document.getElementById('view-result').classList.remove('hidden');
+                    
+                    // Inject the HTML
+                    document.getElementById('injected-report').innerHTML = resultHtml;
+                    
+                    // Scroll to top
+                    window.scrollTo(0, 0);
+                } else {
+                    throw new Error("Server responded with " + response.status);
+                }
 
             } catch (error) {
-                // Error Log
                 logContent.innerHTML += `
                     <div class="text-red-500 mt-1">
-                        [!] Transmission Error: ${error.message}
+                        [!] Critical Failure: ${error.message}
                     </div>
                 `;
-                btn.innerHTML = `Error - Try Again`;
-            }
-
-            // Reset Button after delay
-            setTimeout(() => {
+                btn.innerHTML = `System Error`;
                 btn.disabled = false;
-                btn.innerHTML = originalBtnContent;
-                // Re-render original icons
-                lucide.createIcons();
-            }, 5000);
+            }
         });
     </script>
 </body>
